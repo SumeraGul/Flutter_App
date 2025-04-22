@@ -1,11 +1,25 @@
   import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get_start_with_flutter/DataLayer/ApiClient.dart';
+import 'package:get_start_with_flutter/DataLayer/MyRepository.dart';
+import 'package:get_start_with_flutter/UiLayer/ScreenView.dart';
+import 'package:get_start_with_flutter/UiLayer/ScreenViewModel.dart';
 import 'package:get_start_with_flutter/UserDetail.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(const MyApp());
+
+  final apiService = ApiClient();
+  final repository = MyRepository(apiService);
+  final viewModel = MyViewModel(repository);
+  runApp(
+      ChangeNotifierProvider(
+        create: (_) => viewModel,
+        child: MyApp(),
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +49,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:UserDetail()
+      home:MyScreen()
     );
   }
 }
