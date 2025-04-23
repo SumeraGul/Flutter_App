@@ -1,6 +1,8 @@
   import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_start_with_flutter/DataLayer/ApiClient.dart';
 import 'package:get_start_with_flutter/DataLayer/MyRepository.dart';
 import 'package:get_start_with_flutter/UiLayer/ScreenView.dart';
@@ -10,15 +12,18 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-
   final apiService = ApiClient();
   final repository = MyRepository(apiService);
   final viewModel = MyViewModel(repository);
+
+  Get.put(ApiClient());
+  Get.put(MyRepository(Get.find<ApiClient>()));
+  Get.put(MyViewModel(Get.find<MyRepository>()));
   runApp(
-      ChangeNotifierProvider(
-        create: (_) => viewModel,
-        child: MyApp(),
-      )
+      // ChangeNotifierProvider(
+      //   create: (_) => viewModel,
+    MyApp(),
+
   );
 }
 
@@ -185,7 +190,7 @@ class myState extends State<myStateFulWidgdet>{
      });
      // Save the new value
      await prefs.setInt('count_key', count);
-     log('save count in shared prefernce $count');
+     log('save count in shared preference $count');
    }
   @override
   void initState() {
@@ -197,7 +202,7 @@ class myState extends State<myStateFulWidgdet>{
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       count = prefs.getInt('count_key') ?? 0; // default to 0 if nothing saved yet
-      log('get count from  shared prefernce $count');
+      log('get count from  shared preference $count');
 
     });
   }

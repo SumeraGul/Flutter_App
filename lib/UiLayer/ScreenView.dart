@@ -1,32 +1,44 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_start_with_flutter/DataLayer/ApiClient.dart';
+import 'package:get_start_with_flutter/DataLayer/MyRepository.dart';
 import 'package:get_start_with_flutter/UiLayer/ScreenViewModel.dart';
-import 'package:provider/provider.dart';
 
-class MyScreen extends StatelessWidget{
+class MyScreen extends StatelessWidget {
+  MyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<MyViewModel>();
+    // Inject dependencies (ideally this goes in a binding or main setup)
+    Get.put(ApiClient());
+    final MyViewModel viewModel =
+    Get.put(MyViewModel(MyRepository(Get.find<ApiClient>())));
+
     return Scaffold(
       appBar: AppBar(title: Text("Items")),
-      body: viewModel.isLoading ? Center(child: CircularProgressIndicator()) : viewModel.error != null ? Center(child: Text("Error: ${viewModel.error}"))
-        :  ListView.builder(
-    itemCount: viewModel.items.length,
-      itemBuilder: (context, index) {
-        final post = viewModel.items[index];
-        return ListTile(
-          title: Text(post.title),
-          subtitle: Text(post.body),
-          leading: Text(post.id.toString()),
-        );
-      },
-    ),
-    floatingActionButton: FloatingActionButton(
-    onPressed: () => context.read<MyViewModel>().loadItems(),
-    child: Icon(Icons.refresh),
-    ),
+      body: Obx(() {
+        if (viewModel.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        } else if (viewModel.error.value != null) {
+          return Center(child: Text("Error: ${viewModel.error.value}"));
+        } else {
+          return ListView.builder(
+            itemCount: viewModel.items.length,
+            itemBuilder: (context, index) {
+              final post = viewModel.items[index];
+              return ListTile(
+                title: Text(post.title),
+                subtitle: Text(post.body),
+                leading: Text(post.id.toString()),
+              );
+            },
+          );
+        }
+      }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => viewModel.loadItems(),
+        child: Icon(Icons.refresh),
+      ),
     );
   }
-
 }

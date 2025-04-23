@@ -3,7 +3,6 @@ import 'package:get_start_with_flutter/DataLayer/Models/Posts.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class ApiClient{
-
   final Dio  dio = Dio
     (
     BaseOptions(

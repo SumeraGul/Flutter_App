@@ -1,27 +1,31 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:get_start_with_flutter/DataLayer/Models/Posts.dart';
 import 'package:get_start_with_flutter/DataLayer/MyRepository.dart';
 
-class MyViewModel extends ChangeNotifier{
+class MyViewModel extends GetxController{
    final MyRepository  repository;
    MyViewModel(this.repository);
 
-   List<Post> items = []; // ✅ Now inside the class
-   bool isLoading = false;
-   String? error;
+   var items = <Post>[].obs;
+
+
+   // # List<Post> items = []; // ✅ Now inside the class
+   var isLoading = false.obs;
+   var  error = RxnString();
 
    Future<void> loadItems()  async {
-     isLoading = true;
-     error = null;
-     notifyListeners();
+     isLoading.value  = true;
+     error.value = null;
+     //notifyListeners();
      try{
-       items = await repository.getItems();
+       items.value  = await repository.getItems();
    }
   catch(e){
-       error = e.toString();
+       error.value = e.toString();
      }
-     isLoading = false;
-     notifyListeners();
+     isLoading.value  = false;
+    // notifyListeners();
 }
 
 }
