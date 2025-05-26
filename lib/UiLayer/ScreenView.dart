@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_start_with_flutter/DataLayer/ApiClient.dart';
 import 'package:get_start_with_flutter/DataLayer/MyRepository.dart';
+import 'package:get_start_with_flutter/UiLayer/ScreeenA.dart';
 import 'package:get_start_with_flutter/UiLayer/ScreenViewModel.dart';
 
 class MyScreen extends StatelessWidget {
@@ -36,7 +37,11 @@ class MyScreen extends StatelessWidget {
         }
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => viewModel.loadItems(),
+        onPressed: () =>   Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ScreenA()),
+        ),
+        // onPressed: () => viewModel.loadItems(),
         child: Icon(Icons.refresh),
       ),
     );
